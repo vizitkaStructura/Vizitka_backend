@@ -4,6 +4,7 @@ import math
 import re
 from flask import url_for
 
+
 class FDataBase:
     def __init__(self, db):
         self.__db = db
@@ -14,7 +15,8 @@ class FDataBase:
         try:
             self.__cur.execute(sql)
             res = self.__cur.fetchall()
-            if res: return res
+            if res:
+                return res
         except:
             print("Ошибка чтения из БД")
         return []
@@ -37,7 +39,7 @@ class FDataBase:
             self.__cur.execute("INSERT INTO posts VALUES(NULL, ?, ?, ?, ?)", (title, text, url, tm))
             self.__db.commit()
         except sqlite3.Error as e:
-            print("Ошибка добавления статьи в БД "+str(e))
+            print("Ошибка добавления статьи в БД " + str(e))
             return False
 
         return True
@@ -49,7 +51,7 @@ class FDataBase:
             if res:
                 return res
         except sqlite3.Error as e:
-            print("Ошибка получения статьи из БД "+str(e))
+            print("Ошибка получения статьи из БД " + str(e))
 
         return (False, False)
 
@@ -59,7 +61,7 @@ class FDataBase:
             res = self.__cur.fetchall()
             if res: return res
         except sqlite3.Error as e:
-            print("Ошибка получения статьи из БД "+str(e))
+            print("Ошибка получения статьи из БД " + str(e))
 
         return []
 
@@ -75,7 +77,7 @@ class FDataBase:
             self.__cur.execute("INSERT INTO users VALUES(NULL, ?, ?, ?, ?)", (name, email, hpsw, tm))
             self.__db.commit()
         except sqlite3.Error as e:
-            print("Ошибка добавления пользователя в БД "+str(e))
+            print("Ошибка добавления пользователя в БД " + str(e))
             return False
 
         return True
@@ -90,7 +92,7 @@ class FDataBase:
 
             return res
         except sqlite3.Error as e:
-            print("Ошибка получения данных из БД "+str(e))
+            print("Ошибка получения данных из БД " + str(e))
 
         return False
 
@@ -104,6 +106,6 @@ class FDataBase:
 
             return res
         except sqlite3.Error as e:
-            print("Ошибка получения данных из БД "+str(e))
+            print("Ошибка получения данных из БД " + str(e))
 
         return False
