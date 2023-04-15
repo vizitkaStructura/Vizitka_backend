@@ -1,6 +1,7 @@
 import sqlite3
 import os
 from flask import Flask, render_template, request, g, flash, abort, redirect, url_for
+
 from FDataBase import FDataBase
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -76,7 +77,11 @@ def index():
 def addPost():
     if request.method == "POST":
         if len(request.form['name']) > 4 and len(request.form['post']) > 10:
-            res = dbase.addPost(request.form['name'], request.form['post'], request.form['url'])
+            res = dbase.addPost(request.form['name'],
+                                request.form['post'],
+                                request.form['url']
+                             #   request.form['jobs']
+                                )
             if not res:
                 flash('Ошибка добавления информации', category='error')
             else:
@@ -103,6 +108,7 @@ def login():
         return redirect(url_for('profile'))
 
     if request.method == "POST":
+        global user
         user = dbase.getUserByEmail(request.form['email'])
         if user and check_password_hash(user['psw'], request.form['psw']):
             userlogin = UserLogin().create(user)

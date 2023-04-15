@@ -6,6 +6,7 @@ url text NOT NULL
 
 CREATE TABLE IF NOT EXISTS posts (
 id integer PRIMARY KEY AUTOINCREMENT,
+user_id integer NOT NULL,
 title text NOT NULL,
 text text NOT NULL,
 url text NOT NULL,
