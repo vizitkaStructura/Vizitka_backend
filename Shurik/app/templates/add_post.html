@@ -10,7 +10,9 @@
 <p><label>Ссылка: </label> <input type="text" name="url" value="" required />
 <p><label>Текст:</label>
 <p><textarea name="post" rows=7 cols=40></textarea>
-
+<p><label>Услуги:</label>
+<p><textarea name="jobs" rows=4 cols=40></textarea>
+<input type="hidden" name="curr" value="{{ current_user.get_id() }}">
 <p><input type="submit" value="Добавить" />
 </form>
 {% endblock %}

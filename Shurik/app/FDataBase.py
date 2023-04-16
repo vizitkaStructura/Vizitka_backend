@@ -3,6 +3,7 @@ import time
 import math
 import re
 from flask import url_for
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 
 class FDataBase:
@@ -21,7 +22,7 @@ class FDataBase:
             print("Ошибка чтения из БД")
         return []
 
-    def addPost(self, title, text, url):
+    def addPost(self, title, text, url, jobs, curr):
         try:
             self.__cur.execute(f"SELECT COUNT() as `count` FROM posts WHERE url LIKE '{url}'")
             res = self.__cur.fetchone()
@@ -30,13 +31,12 @@ class FDataBase:
                 return False
 
             base = url_for('static', filename='images_html')
-
+            curr = current_user.get_id()
             text = re.sub(r"(?P<tag><img\s+[^>]*src=)(?P<quote>[\"'])(?P<url>.+?)(?P=quote)>",
                           "\\g<tag>" + base + "/\\g<url>>",
                           text)
-
             tm = math.floor(time.time())
-            self.__cur.execute("INSERT INTO posts VALUES(NULL, ?, ?, ?, ?)", (title, text, url, tm))
+            self.__cur.execute("INSERT INTO posts VALUES(NULL, ?, ?, ?, ?, ?, ?)", (title, text, url, tm, jobs, curr))
             self.__db.commit()
         except sqlite3.Error as e:
             print("Ошибка добавления статьи в БД " + str(e))
@@ -59,7 +59,8 @@ class FDataBase:
         try:
             self.__cur.execute(f"SELECT id, title, text, url FROM posts ORDER BY time DESC")
             res = self.__cur.fetchall()
-            if res: return res
+            if res:
+                return res
         except sqlite3.Error as e:
             print("Ошибка получения статьи из БД " + str(e))
 
@@ -109,3 +110,22 @@ class FDataBase:
             print("Ошибка получения данных из БД " + str(e))
 
         return False
+
+
+"""    def addComment(self, text, email, name_author, current_user):
+        try:
+            self.__cur.execute(f"SELECT COUNT() as `count` FROM comments WHERE email LIKE '{email}'")
+            res = self.__cur.fetchone()
+            if res['count'] > 0:
+                print("Комментарий с таким email уже существует")
+                return False
+
+            tm = math.floor(time.time())
+            self.__cur.execute("INSERT INTO comments VALUES(NULL, ?, ?, ?, ?, ?)", (email, text, tm))
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print("Ошибка добавления статьи в БД " + str(e))
+            return False
+
+        return True
+"""

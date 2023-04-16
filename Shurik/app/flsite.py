@@ -1,5 +1,7 @@
 import sqlite3
 import os
+
+import flask_login
 from flask import Flask, render_template, request, g, flash, abort, redirect, url_for
 
 from FDataBase import FDataBase
@@ -76,18 +78,19 @@ def index():
 @app.route("/add_post", methods=["POST", "GET"])
 def addPost():
     if request.method == "POST":
-        if len(request.form['name']) > 4 and len(request.form['post']) > 10:
-            res = dbase.addPost(request.form['name'],
-                                request.form['post'],
-                                request.form['url']
-                             #   request.form['jobs']
-                                )
-            if not res:
-                flash('Ошибка добавления информации', category='error')
-            else:
-                flash('Информация добавлена успешно', category='success')
-        else:
+        curr = current_user.get_id()
+        res = dbase.addPost(request.form['name'],
+                            request.form['post'],
+                            request.form['url'],
+                            request.form['jobs'],
+                            request.form['curr']
+                            )
+        if not res:
             flash('Ошибка добавления информации', category='error')
+        else:
+            flash('Информация добавлена успешно', category='success')
+    else:
+        flash('Ошибка добавления информации', category='error')
 
     return render_template('add_post.html', menu=dbase.getMenu(), title="Добавление информации")
 
@@ -98,7 +101,6 @@ def showPost(alias):
     title, post = dbase.getPost(alias)
     if not title:
         abort(404)
-
     return render_template('post.html', menu=dbase.getMenu(), title=title, post=post)
 
 
@@ -151,8 +153,10 @@ def logout():
 @login_required
 def profile():
     return f"""<p><a href="{url_for('logout')}">Выйти из профиля</a>
-                <p>user info: {current_user.get_id()}"""
+            <p>user info: {current_user.get_id()}"""
 
+
+create_db()
 
 if __name__ == "__main__":
     app.run(debug=True)
