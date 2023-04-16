@@ -3,7 +3,9 @@
 # Установка
 
 Склонируйте этот репозиторий на свой компьютер.
+
 git clone https://github.com/vizitkaStructura/Vizitka_backend.git
+
 Создайте виртуальное окружение с помощью команды python3 -m venv venv и активируйте его с помощью команды source venv/bin/activate.
 Установите зависимости с помощью команды pip install -r requirements.txt.
 Запустите сервер с помощью команды python app.py.
